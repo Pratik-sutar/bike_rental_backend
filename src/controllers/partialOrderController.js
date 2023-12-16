@@ -2,7 +2,9 @@ const PartialOrder = require("../models/partialOrderModel");
 const Product = require("../models/productModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const jwt = require("jsonwebtoken");
 const ApiFeatures = require("../utils/apiFeatures");
+const { decodeToken } = require("../middleware/decodeToken");
 
 // Create new order
 exports.newPartialOrder = catchAsyncErrors(async (req, res, next) => {
@@ -15,7 +17,9 @@ exports.newPartialOrder = catchAsyncErrors(async (req, res, next) => {
     numberOfDays,
     totalOrderAmount,
   } = req.body;
-  console.log("body");
+  let { token } = req.cookies;
+  let userData = decodeToken(token);
+
   const order = await PartialOrder.create({
     vendor,
     vehicleBrand,
@@ -24,7 +28,7 @@ exports.newPartialOrder = catchAsyncErrors(async (req, res, next) => {
     dropDate,
     numberOfDays,
     totalOrderAmount,
-    user: req.user._id,
+    user: userData.id,
   });
   console.log("success");
   res.status(201).json({
@@ -58,7 +62,11 @@ exports.getSinglePartialOrder = catchAsyncErrors(async (req, res, next) => {
 //Get logged in user orders
 
 exports.myPartialOrders = catchAsyncErrors(async (req, res, next) => {
-  const orders = await PartialOrder.find({ user: req.user._id });
+  let { token } = req.cookies;
+  let userData = decodeToken(token);
+  const orders = await PartialOrder.find({
+    $or: [{ user: userData.id }, { vendor: userData.id }],
+  });
 
   res.status(200).json({
     success: true,
@@ -87,6 +95,7 @@ exports.getAllPartialOrders = catchAsyncErrors(async (req, res, next) => {
 //Update order status --Admin
 
 exports.updatePartialOrder = catchAsyncErrors(async (req, res, next) => {
+  console.log(req.params.id);
   const order = await PartialOrder.findById(req.params.id);
 
   if (!order) {
@@ -96,12 +105,12 @@ exports.updatePartialOrder = catchAsyncErrors(async (req, res, next) => {
     });
   }
 
-  if (order.orderStatus === "Delivered") {
-    return res.status(400).json({
-      success: false,
-      message: "You have already delivered this order",
-    });
-  }
+  // if (order.orderStatus === "Delivered") {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: "You have already delivered this order",
+  //   });
+  // }
 
   if (req.body.status === "Shipped") {
     order.orderItems.forEach(async (o) => {

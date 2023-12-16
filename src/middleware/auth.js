@@ -8,12 +8,14 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   // console.log(req);
 
   if (!token) {
-    // return res.status(401).json({error:"Please login"})
-    return next(
-      res.status(401).json({
-        message: "Please login to access this resource",
-      })
-    );
+    return res
+      .status(401)
+      .json({ message: "Please login to access this resource" });
+    // return next(
+    //   res.status(401).json({
+    //     message: "Please login to access this resource",
+    //   })
+    // );
   }
 
   const decodedData = jwt.verify(token, process.env.JWT_SECRET);

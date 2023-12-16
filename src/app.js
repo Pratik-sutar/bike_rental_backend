@@ -15,7 +15,7 @@ app.use(cors());
 
 // Route Imports
 const product = require("./routes/productRoute");
-const partialOrder = require("./routes/partialOrderRoute");
+// const partialOrder = require("./routes/partialOrderRoute"); //This was a partial order route which is not in use now
 const vendor = require("./routes/vendorRoute");
 const user = require("./routes/userRoute");
 const order = require("./routes/orderRoute");
@@ -23,7 +23,7 @@ const order = require("./routes/orderRoute");
 app.use("/api/v1", product);
 app.use("/api/v1", vendor);
 app.use("/api/v1", user);
-app.use("/api/v1", partialOrder);
+// app.use("/api/v1", partialOrder);
 app.use("/api/v1", order);
 
 // Error Middleware

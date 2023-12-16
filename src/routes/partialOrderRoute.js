@@ -19,13 +19,11 @@ router
 
 router.route("/partialOrders/me").get(isAuthenticatedUser, myPartialOrders);
 
+router.route("/partialOrder/:id").put(isAuthenticatedUser, updatePartialOrder);
+
 router
   .route("/admin/partialOrders")
   .get(isAuthenticatedUser, authorizeRoles("admin"), getAllPartialOrders);
-
-router
-  .route("/admin/partialOrder/:id")
-  .put(isAuthenticatedUser, authorizeRoles("admin"), updatePartialOrder);
 
 router
   .route("/admin/partialOrder/:id")
