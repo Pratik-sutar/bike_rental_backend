@@ -11,7 +11,7 @@ const { decodeToken } = require("../middleware/decodeToken");
 exports.newOrder = catchAsyncErrors(async (req, res, next) => {
   let { token } = req.cookies;
   let userData = decodeToken(token);
-  console.log(userData);
+  console.log(userData, "in order controller");
   const {
     vendor,
     vehicleBrand,
@@ -23,6 +23,9 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     documentSubmitted,
     vehicleNumber,
     totalOrderAmount,
+    custumerNumber,
+    rentPerDay,
+    orderStatus,
   } = req.body;
 
   const order = await Order.create({
@@ -36,6 +39,9 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     documentSubmitted,
     vehicleNumber,
     totalOrderAmount,
+    custumerNumber,
+    rentPerDay,
+    orderStatus,
     paidAt: Date.now(),
     user: userData.id,
   });

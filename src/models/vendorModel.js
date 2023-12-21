@@ -18,7 +18,7 @@ const vendorSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter your area of operation"],
   },
-  
+
   shopNo: {
     type: String,
     required: [true, "Please enter your shop No or building no"],
@@ -46,8 +46,8 @@ const vendorSchema = new mongoose.Schema({
   number: {
     type: String,
     required: [true, "Please enter your phone number"],
-    maxLength:[10,"Number should be 10 digit only"],
-    minLength:[10,"Number should be 10 digit only"]
+    maxLength: [10, "Number should be 10 digit only"],
+    minLength: [10, "Number should be 10 digit only"],
   },
   email: {
     type: String,
@@ -65,11 +65,15 @@ const vendorSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter your area of operation"],
   },
+  isReomved: {
+    type: Boolean,
+    default: false,
+  },
   role: {
     type: String,
     default: "vendor",
   },
-  createdAt:{
+  createdAt: {
     type: Date,
     default: Date.now,
   },
@@ -109,9 +113,9 @@ vendorSchema.methods.getResetPasswordToken = function () {
     .update(resetToken)
     .digest("hex");
 
-    this.resetPasswordExpire =Date.now()+15*60*1000
+  this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
 
-    return resetToken;
+  return resetToken;
 };
 
 module.exports = mongoose.model("Vendor", vendorSchema);

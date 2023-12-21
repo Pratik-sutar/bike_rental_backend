@@ -45,6 +45,14 @@ const orderSchema = new mongoose.Schema({
     default: 1,
     required: true,
   },
+  rentPerDay: {
+    type: Number,
+    required: true,
+  },
+  custumerNumber: {
+    type: Number,
+    required: true,
+  },
   totalOrderAmount: {
     type: Number,
     required: true,
