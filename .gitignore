@@ -1,5 +1,5 @@
 node_modules
 github.txt
 undone.txt
-./src/config/config.env
+config.env
 .env

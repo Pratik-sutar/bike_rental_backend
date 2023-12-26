@@ -3,11 +3,14 @@ const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const cloudinary = require("cloudinary");
 const ApiFeatures = require("../utils/apiFeatures");
+const { decodeToken } = require("../middleware/decodeToken");
 
 // create --Admin
 exports.createProduct = catchAsyncErrors(async (req, res, next) => {
-  // console.log(req.body);
-  req.body.vendor = req.user.id;
+  let token = req.headers.cookies;
+  let userData = decodeToken(token);
+  req.body.vendor = userData.UserId;
+  console.log(req.body);
 
   const product = await Product.create(req.body);
 
@@ -40,8 +43,10 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
 // get all products (admin)
 
 exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
-  const products = await Product.find({ user: req.user.id });
-  // console.log(req.user.id);
+  let token = req.headers.cookies;
+  let userData = decodeToken(token);
+  const products = await Product.find({ user: userData.UserId });
+  // console.log(userData.UserId);
   res.status(200).json({
     success: true,
     products,
