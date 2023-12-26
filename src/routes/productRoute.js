@@ -21,20 +21,17 @@ router.route("/product/:id").get(getProductDetails);
 router.post(
   "/admin/products/new",
   isAuthenticatedUser,
+  authorizeRoles("vendor"),
   createProduct
 );
 
-router
-  .route("/admin/products")
-  .get(isAuthenticatedUser, getAdminProducts);
+router.route("/admin/products").get(isAuthenticatedUser, getAdminProducts);
+
+router.route("/admin/product/:id").put(isAuthenticatedUser, updateProduct);
 
 router
   .route("/admin/product/:id")
-  .put(isAuthenticatedUser, updateProduct);
-
-router
-  .route("/admin/product/:id")
-  .delete(isAuthenticatedUser, deleteProduct);
+  .delete(isAuthenticatedUser, authorizeRoles("vendor"), deleteProduct);
 
 router.route("/review").put(isAuthenticatedUser, createProductReview);
 
