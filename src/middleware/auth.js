@@ -5,7 +5,7 @@ const User = require("../models/vendorModel");
 
 exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   const token = req.headers.cookies;
-  console.log(req.headers.cookies, "header");
+  // console.log(req.headers.cookies, "header");
 
   if (!token) {
     return res
@@ -19,7 +19,7 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   }
 
   const decodedData = jwt.verify(token, process.env.JWT_SECRET);
-  console.log(decodedData, "decoded data");
+  // console.log(decodedData, "decoded data");
   req.user = await User.findById(decodedData.id);
   next();
 });

@@ -17,7 +17,7 @@ exports.newPartialOrder = catchAsyncErrors(async (req, res, next) => {
     numberOfDays,
     totalOrderAmount,
   } = req.body;
-  let { token } = req.cookies;
+  let token = req.headers.cookies;
   let userData = decodeToken(token);
 
   const order = await PartialOrder.create({
@@ -62,7 +62,7 @@ exports.getSinglePartialOrder = catchAsyncErrors(async (req, res, next) => {
 //Get logged in user orders
 
 exports.myPartialOrders = catchAsyncErrors(async (req, res, next) => {
-  let { token } = req.cookies;
+  let token = req.headers.cookies;
   let userData = decodeToken(token);
   const orders = await PartialOrder.find({
     $or: [{ user: userData.id }, { vendor: userData.id }],

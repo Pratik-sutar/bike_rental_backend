@@ -9,9 +9,9 @@ const { decodeToken } = require("../middleware/decodeToken");
 
 // Create new order
 exports.newOrder = catchAsyncErrors(async (req, res, next) => {
-  let { token } = req.cookies;
+  let token = req.headers.cookies;
   let userData = decodeToken(token);
-  console.log(userData, "in order controller");
+  // console.log(userData, "in order controller");
   const {
     vendor,
     vehicleBrand,
@@ -75,9 +75,9 @@ exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
 //Get logged in user orders
 
 exports.myOrders = catchAsyncErrors(async (req, res, next) => {
-  let { token } = req.cookies;
+  let token = req.headers.cookies;
+  // console.log(token, "my order cookie");
   let userData = decodeToken(token);
-  // console.log(userData);
   const orders = await Order.find({
     $or: [{ user: userData.id }, { vendor: userData.id }],
   });
@@ -110,7 +110,7 @@ exports.getAllOrders = catchAsyncErrors(async (req, res, next) => {
 //Update order status --Admin
 
 exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
-  let { token } = req.cookies;
+  let token = req.headers.cookies;
   let userData = decodeToken(token);
   const order = await Order.findById(req.params.id);
   const user = await User.findById(userData.id);
@@ -188,7 +188,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
   // }
 
   if (order.orderStatus === "Requested" && vendor) {
-    console.log("in vendor confirm order condition");
+    // console.log("in vendor confirm order condition");
     (order.vehicleBrand = req.body.vehicleBrand),
       (order.vehicleModel = req.body.vehicleModel),
       (order.pickupDate = req.body.pickupDate),
@@ -205,7 +205,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
       success: true,
     });
   } else if (order.orderStatus === "Requested" && user) {
-    console.log("in user condition");
+    // console.log("in user condition");
     (order.vehicleBrand = req.body.vehicleBrand),
       (order.vehicleModel = req.body.vehicleModel),
       (order.pickupDate = req.body.pickupDate),
@@ -217,7 +217,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
       success: true,
     });
   } else if (order.orderStatus === "Confirmed" && user) {
-    console.log("in user confirmed order condition");
+    // console.log("in user confirmed order condition");
     (order.dropDate = req.body.dropDate),
       (order.numberOfDays = req.body.numberOfDays),
       (order.totalOrderAmount = req.body.totalOrderAmount),
@@ -226,7 +226,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
       success: true,
     });
   } else if (order.orderStatus === "Confirmed" && vendor) {
-    console.log("in vendor confirmed order condition");
+    // console.log("in vendor confirmed order condition");
     (order.vehicleBrand = req.body.vehicleBrand),
       (order.vehicleModel = req.body.vehicleModel),
       (order.pickupDate = req.body.pickupDate),
@@ -248,7 +248,7 @@ async function updateStock(id, quantity) {
   const product = await Product.findById(id);
   product.stock -= quantity;
 
-  console.log(product.stock);
+  // console.log(product.stock);
 
   await product.save({ validateBeforeSave: false });
 }
