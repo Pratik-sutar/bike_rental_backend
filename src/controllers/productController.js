@@ -1,7 +1,6 @@
 const Product = require("../models/productModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const cloudinary = require("cloudinary");
 const ApiFeatures = require("../utils/apiFeatures");
 const { decodeToken } = require("../middleware/decodeToken");
 
