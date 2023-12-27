@@ -2,6 +2,7 @@ const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("./catchAsyncErrors");
 const jwt = require("jsonwebtoken");
 const User = require("../models/vendorModel");
+const { decodeToken } = require("./decodeToken");
 
 exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   const token = req.headers.cookies;
@@ -17,13 +18,13 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   next();
 });
 
-exports.authorizeRoles = (...roles) => {
+exports.authorizeRoles = (roles) => {
   return (req, res, next) => {
-    console.log(req.headers.cookies);
-    if (!roles.includes(req.user.role)) {
+    let userData = decodeToken(req.headers.cookies);
+    if (roles !== userData.role) {
       return next(
         res.status(403).json({
-          message: `Role: ${req.user.role} is not allowed to access this resource`,
+          message: `Role: ${userData.role} is not allowed to access this resource`,
         })
       );
     }
