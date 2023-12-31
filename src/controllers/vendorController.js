@@ -79,7 +79,12 @@ exports.loginVendor = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  sendToken(vendor, 200, res);
+  const vendorWithoutPassword = { ...vendor._doc };
+  delete vendorWithoutPassword.password;
+
+  console.log(vendorWithoutPassword);
+
+  sendToken(vendorWithoutPassword, 200, res);
 });
 
 // Logout vendor
@@ -124,7 +129,7 @@ exports.vendorForgotPassword = catchAsyncErrors(async (req, res, next) => {
   try {
     await sendEmail({
       email: vendor.email,
-      subject: "RJ Tech Store Password Recovery",
+      subject: "Bike rental Password Recovery",
       message,
     });
 

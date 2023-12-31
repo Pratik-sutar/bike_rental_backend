@@ -32,11 +32,11 @@ const orderSchema = new mongoose.Schema({
     default: null,
   },
   pickupDate: {
-    type: Date,
+    type: String,
     required: true,
   },
   dropDate: {
-    type: Date,
+    type: String,
     required: true,
   },
   numberOfDays: {
@@ -49,7 +49,15 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  custumerNumber: {
+  customerName: {
+    type: String,
+    required: true,
+  },
+  customerEmail: {
+    type: String,
+    required: true,
+  },
+  customerNumber: {
     type: Number,
     required: true,
   },

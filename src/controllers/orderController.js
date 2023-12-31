@@ -13,7 +13,6 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
   let userData = decodeToken(token);
   // console.log(userData, "in order controller");
   const {
-    vendor,
     vehicleBrand,
     vehicleModel,
     pickupDate,
@@ -23,13 +22,15 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     documentSubmitted,
     vehicleNumber,
     totalOrderAmount,
-    custumerNumber,
+    customerName,
+    customerEmail,
+    customerNumber,
     rentPerDay,
     orderStatus,
   } = req.body;
 
   const order = await Order.create({
-    vendor,
+    vendor: userData.role === "vendor" ? userData.UserId : req.body.vendor,
     vehicleBrand,
     vehicleModel,
     pickupDate,
@@ -39,11 +40,13 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     documentSubmitted,
     vehicleNumber,
     totalOrderAmount,
-    custumerNumber,
+    customerName,
+    customerEmail,
+    customerNumber,
     rentPerDay,
     orderStatus,
     paidAt: Date.now(),
-    user: userData.id,
+    user: userData.UserId,
   });
   res.status(201).json({
     success: true,
@@ -79,7 +82,7 @@ exports.myOrders = catchAsyncErrors(async (req, res, next) => {
   // console.log(token, "my order cookie");
   let userData = decodeToken(token);
   const orders = await Order.find({
-    $or: [{ user: userData.id }, { vendor: userData.id }],
+    $or: [{ user: userData.UserId }, { vendor: userData.UserId }],
   });
 
   res.status(200).json({
@@ -112,132 +115,71 @@ exports.getAllOrders = catchAsyncErrors(async (req, res, next) => {
 exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
   let token = req.headers.cookies;
   let userData = decodeToken(token);
+
   const order = await Order.findById(req.params.id);
-  const user = await User.findById(userData.id);
-  const vendor = await Vendor.findById(userData.id);
   if (!order) {
     return res.status(404).json({
       success: false,
       message: "Order not found with this id",
     });
   }
-  //  else {
-  //   switch (true) {
-  //     case order.orderStatus == "Requested" && vendor:
-  //       console.log("in vendor confirm order condition");
-  //       (order.vehicleBrand = req.body.vehicleBrand),
-  //         (order.vehicleModel = req.body.vehicleModel),
-  //         (order.pickupDate = req.body.pickupDate),
-  //         (order.dropDate = req.body.dropDate),
-  //         (order.numberOfDays = req.body.numberOfDays),
-  //         (order.totalOrderAmount = req.body.totalOrderAmount),
-  //         (order.documentNumber = req.body.documentNumber),
-  //         (order.documentSubmitted = req.body.documentSubmitted),
-  //         (order.vehicleNumber = req.body.vehicleNumber),
-  //         (order.orderStatus = "Confirmed"),
-  //         (order.paidAt = Date.now());
-  //       await order.save({ validateBeforeSave: false });
-  //       res.status(200).json({
-  //         success: true,
-  //       });
-  //       break;
-
-  //     case order.orderStatus == "Requested" && user:
-  //       console.log("in user condition");
-  //       (order.vehicleBrand = req.body.vehicleBrand),
-  //         (order.vehicleModel = req.body.vehicleModel),
-  //         (order.pickupDate = req.body.pickupDate),
-  //         (order.dropDate = req.body.dropDate),
-  //         (order.numberOfDays = req.body.numberOfDays),
-  //         (order.totalOrderAmount = req.body.totalOrderAmount),
-  //         await order.save({ validateBeforeSave: false });
-  //       res.status(200).json({
-  //         success: true,
-  //       });
-  //       break;
-
-  //     case order.orderStatus == "Confirmed" && user:
-  //       console.log("in user confirmed order condition");
-  //       (order.dropDate = req.body.dropDate),
-  //         (order.numberOfDays = req.body.numberOfDays),
-  //         (order.totalOrderAmount = req.body.totalOrderAmount),
-  //         await order.save({ validateBeforeSave: false });
-  //       res.status(200).json({
-  //         success: true,
-  //       });
-  //       break;
-
-  //     case order.orderStatus == "Confirmed" && vendor:
-  //       console.log("in vendor confirmed order condition");
-  //       (order.vehicleBrand = req.body.vehicleBrand),
-  //         (order.vehicleModel = req.body.vehicleModel),
-  //         (order.pickupDate = req.body.pickupDate),
-  //         (order.dropDate = req.body.dropDate),
-  //         (order.numberOfDays = req.body.numberOfDays),
-  //         (order.totalOrderAmount = req.body.totalOrderAmount),
-  //         (order.documentNumber = req.body.documentNumber),
-  //         (order.documentSubmitted = req.body.documentSubmitted),
-  //         (order.vehicleNumber = req.body.vehicleNumber),
-  //         // (order.paidAt = Date.now()),
-  //         await order.save({ validateBeforeSave: false });
-  //       res.status(200).json({
-  //         success: true,
-  //       });
-  //       break;
-  //   }
-  // }
-
-  if (order.orderStatus === "Requested" && vendor) {
-    // console.log("in vendor confirm order condition");
-    (order.vehicleBrand = req.body.vehicleBrand),
-      (order.vehicleModel = req.body.vehicleModel),
-      (order.pickupDate = req.body.pickupDate),
-      (order.dropDate = req.body.dropDate),
-      (order.numberOfDays = req.body.numberOfDays),
-      (order.totalOrderAmount = req.body.totalOrderAmount),
-      (order.documentNumber = req.body.documentNumber),
-      (order.documentSubmitted = req.body.documentSubmitted),
-      (order.vehicleNumber = req.body.vehicleNumber),
-      (order.orderStatus = "Confirmed"),
-      (order.paidAt = Date.now());
+  if (order.orderStatus === "Requested" && userData.role === "vendor") {
+    console.log("in vendor confirm order condition");
+    order.customerName = req.body.customerName;
+    order.customerEmail = req.body.customerEmail;
+    order.customerNumber = req.body.customerNumber;
+    order.vehicleBrand = req.body.vehicleBrand;
+    order.vehicleModel = req.body.vehicleModel;
+    order.pickupDate = req.body.pickupDate;
+    order.dropDate = req.body.dropDate;
+    order.numberOfDays = req.body.numberOfDays;
+    order.totalOrderAmount = req.body.totalOrderAmount;
+    order.documentNumber = req.body.documentNumber;
+    order.documentSubmitted = req.body.documentSubmitted;
+    order.vehicleNumber = req.body.vehicleNumber;
+    order.orderStatus = "Confirmed";
+    order.paidAt = Date.now();
     await order.save({ validateBeforeSave: false });
     res.status(200).json({
       success: true,
     });
-  } else if (order.orderStatus === "Requested" && user) {
-    // console.log("in user condition");
-    (order.vehicleBrand = req.body.vehicleBrand),
-      (order.vehicleModel = req.body.vehicleModel),
-      (order.pickupDate = req.body.pickupDate),
-      (order.dropDate = req.body.dropDate),
-      (order.numberOfDays = req.body.numberOfDays),
-      (order.totalOrderAmount = req.body.totalOrderAmount),
-      await order.save({ validateBeforeSave: false });
+  } else if (order.orderStatus === "Requested" && userData.role === "user") {
+    console.log("in user condition unconfirmed");
+    order.vehicleBrand = req.body.vehicleBrand;
+    order.vehicleModel = req.body.vehicleModel;
+    order.pickupDate = req.body.pickupDate;
+    order.dropDate = req.body.dropDate;
+    order.numberOfDays = req.body.numberOfDays;
+    order.totalOrderAmount = req.body.totalOrderAmount;
+    console.log(order, "updated order data");
+    console.log(req.body, "recied order data");
+    await order.save({ validateBeforeSave: false });
     res.status(200).json({
       success: true,
     });
-  } else if (order.orderStatus === "Confirmed" && user) {
-    // console.log("in user confirmed order condition");
-    (order.dropDate = req.body.dropDate),
-      (order.numberOfDays = req.body.numberOfDays),
-      (order.totalOrderAmount = req.body.totalOrderAmount),
-      await order.save({ validateBeforeSave: false });
+  } else if (order.orderStatus === "Confirmed" && userData.role === "user") {
+    console.log("in user confirmed order condition");
+    order.dropDate = req.body.dropDate;
+    order.numberOfDays = req.body.numberOfDays;
+    order.totalOrderAmount = req.body.totalOrderAmount;
+    await order.save({ validateBeforeSave: false });
     res.status(200).json({
       success: true,
     });
-  } else if (order.orderStatus === "Confirmed" && vendor) {
-    // console.log("in vendor confirmed order condition");
-    (order.vehicleBrand = req.body.vehicleBrand),
-      (order.vehicleModel = req.body.vehicleModel),
-      (order.pickupDate = req.body.pickupDate),
-      (order.dropDate = req.body.dropDate),
-      (order.numberOfDays = req.body.numberOfDays),
-      (order.totalOrderAmount = req.body.totalOrderAmount),
-      (order.documentNumber = req.body.documentNumber),
-      (order.documentSubmitted = req.body.documentSubmitted),
-      (order.vehicleNumber = req.body.vehicleNumber),
-      // (order.paidAt = Date.now()),
-      await order.save({ validateBeforeSave: false });
+  } else if (order.orderStatus === "Confirmed" && userData.role === "vendor") {
+    console.log("in vendor confirmed order condition");
+    order.vehicleBrand = req.body.vehicleBrand;
+    order.vehicleModel = req.body.vehicleModel;
+    order.pickupDate = req.body.pickupDate;
+    order.dropDate = req.body.dropDate;
+    order.numberOfDays = req.body.numberOfDays;
+    order.totalOrderAmount = req.body.totalOrderAmount;
+    order.documentNumber = req.body.documentNumber;
+    order.documentSubmitted = req.body.documentSubmitted;
+    order.vehicleNumber = req.body.vehicleNumber;
+    // (order.paidAt = Date.now()),
+    console.log(order, "order data");
+    await order.save({ validateBeforeSave: false });
     res.status(200).json({
       success: true,
     });

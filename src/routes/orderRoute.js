@@ -19,7 +19,7 @@ router.route("/orders/me").get(isAuthenticatedUser, myOrders);
 
 router.route("/admin/orders").get(isAuthenticatedUser, getAllOrders);
 
-router.route("/admin/order/:id").patch(isAuthenticatedUser, updateOrder);
+router.route("/order/:id").post(isAuthenticatedUser, updateOrder);
 
 router.route("/admin/order/:id").delete(isAuthenticatedUser, deleteOrder);
 
