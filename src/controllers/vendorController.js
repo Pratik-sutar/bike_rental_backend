@@ -4,6 +4,7 @@ const Vendor = require("../models/vendorModel");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
+const { decodeToken } = require("../middleware/decodeToken");
 
 // Register a vendor
 
@@ -194,7 +195,9 @@ exports.vendorResetPassword = async (req, res, next) => {
 // Get vendor details
 
 exports.getVendorDetails = catchAsyncErrors(async (req, res, next) => {
-  const vendor = await Vendor.findById(req.vendor.id);
+  let token = req.headers.cookies;
+  const userData = decodeToken(token);
+  const vendor = await Vendor.findById(userData.UserId);
 
   res.status(200).json({
     success: true,
