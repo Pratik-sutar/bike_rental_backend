@@ -9,7 +9,6 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
   let token = req.headers.cookies;
   let userData = decodeToken(token);
   req.body.vendor = userData.UserId;
-  console.log(req.body);
 
   const product = await Product.create(req.body);
 
@@ -39,15 +38,30 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// get my products
+
+exports.getMyProducts = catchAsyncErrors(async (req, res, next) => {
+  let token = req.headers.cookies;
+  let userData = decodeToken(token);
+  const products = await Product.find({ vendor: userData.UserId });
+  res.status(200).json({
+    success: true,
+    length: products.length,
+    products,
+  });
+});
+
 // get all products (admin)
 
 exports.getAdminProducts = catchAsyncErrors(async (req, res, next) => {
   let token = req.headers.cookies;
   let userData = decodeToken(token);
-  const products = await Product.find({ user: userData.UserId });
+  const products = await Product.find();
   // console.log(userData.UserId);
   res.status(200).json({
     success: true,
+    length: products.length,
+
     products,
   });
 });
