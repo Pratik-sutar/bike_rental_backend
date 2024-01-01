@@ -40,7 +40,12 @@ exports.registerVendor = catchAsyncErrors(async (req, res, next) => {
     googleMapsCoOrdinates,
   });
 
-  sendToken(vendor, 201, res);
+  const vendorWithoutPassword = { ...vendor._doc };
+  delete vendorWithoutPassword.password;
+
+  console.log(vendorWithoutPassword);
+
+  sendToken(vendorWithoutPassword, 200, res);
 });
 
 // Login vendor
