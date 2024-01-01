@@ -198,10 +198,10 @@ exports.getVendorDetails = catchAsyncErrors(async (req, res, next) => {
   let token = req.headers.cookies;
   const userData = decodeToken(token);
   const vendor = await Vendor.findById(userData.UserId);
-
+  let user = vendor;
   res.status(200).json({
     success: true,
-    vendor,
+    user,
   });
 });
 
