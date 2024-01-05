@@ -240,15 +240,32 @@ exports.vendorUpdatePassword = catchAsyncErrors(async (req, res, next) => {
 // update vendor Profile
 
 exports.vendorUpdateProfile = catchAsyncErrors(async (req, res, next) => {
+  let token = req.headers.cookies;
+  const userData = decodeToken(token);
   const newVendorData = {
-    name: req.body.name,
+    vendorName: req.body.vendorName,
+    companyName: req.body.companyName,
+    areaOfOperation: req.body.areaOfOperation,
+    shopNo: req.body.shopNo,
+    areaName: req.body.areaName,
+    landmark: req.body.landmark,
+    city: req.body.city,
+    pincode: req.body.pincode,
+    state: req.body.state,
+    number: req.body.number,
     email: req.body.email,
+    password: req.body.password,
+    googleMapsCoOrdinates: req.body.googleMapsCoOrdinates,
   };
 
-  const vendor = await Vendor.findByIdAndUpdate(req.vendor.id, newVendorData, {
-    runValidators: true,
-    useFindAndModify: true,
-  });
+  const vendor = await Vendor.findByIdAndUpdate(
+    userData.UserId,
+    newVendorData,
+    {
+      runValidators: true,
+      useFindAndModify: true,
+    }
+  );
 
   res.status(200).json({
     success: true,

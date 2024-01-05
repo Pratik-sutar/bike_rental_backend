@@ -20,7 +20,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     numberOfDays,
     documentNumber,
     documentSubmitted,
-    vehicleNumber,
+    registerationNumber,
     totalOrderAmount,
     customerName,
     customerEmail,
@@ -38,7 +38,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     numberOfDays,
     documentNumber,
     documentSubmitted,
-    vehicleNumber,
+    registerationNumber,
     totalOrderAmount,
     customerName,
     customerEmail,
@@ -136,7 +136,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     order.totalOrderAmount = req.body.totalOrderAmount;
     order.documentNumber = req.body.documentNumber;
     order.documentSubmitted = req.body.documentSubmitted;
-    order.vehicleNumber = req.body.vehicleNumber;
+    order.registerationNumber = req.body.registerationNumber;
     order.orderStatus = "Confirmed";
     order.paidAt = Date.now();
     await order.save({ validateBeforeSave: false });
@@ -176,7 +176,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     order.totalOrderAmount = req.body.totalOrderAmount;
     order.documentNumber = req.body.documentNumber;
     order.documentSubmitted = req.body.documentSubmitted;
-    order.vehicleNumber = req.body.vehicleNumber;
+    order.registerationNumber = req.body.registerationNumber;
     // (order.paidAt = Date.now()),
     console.log(order, "order data");
     await order.save({ validateBeforeSave: false });
