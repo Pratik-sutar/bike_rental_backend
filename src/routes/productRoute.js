@@ -29,7 +29,7 @@ router.route("/my_products").get(isAuthenticatedUser, getMyProducts);
 
 router.route("/admin/products").get(isAuthenticatedUser, getAdminProducts);
 
-router.route("/admin/product/:id").put(isAuthenticatedUser, updateProduct);
+router.route("/product/:id").put(isAuthenticatedUser, updateProduct);
 
 router
   .route("/admin/product/:id")

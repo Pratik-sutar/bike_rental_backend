@@ -85,7 +85,7 @@ exports.getProductDetails = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-// update product --Admin
+// update product
 exports.updateProduct = catchAsyncErrors(async (req, res) => {
   let product = await Product.findById(req.params.id);
   if (!product) {
@@ -94,6 +94,8 @@ exports.updateProduct = catchAsyncErrors(async (req, res) => {
       message: "Product not found",
     });
   }
+
+  console.log(req.body);
 
   product = await Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
