@@ -95,7 +95,7 @@ exports.updateProduct = catchAsyncErrors(async (req, res) => {
     });
   }
 
-  console.log(req.body);
+  // console.log(req.body);
 
   product = await Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
