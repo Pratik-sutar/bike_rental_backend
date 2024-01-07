@@ -33,8 +33,8 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     vendor: userData.role === "vendor" ? userData.UserId : req.body.vendor,
     vehicleBrand,
     vehicleModel,
-    pickupDate,
-    dropDate,
+    pickupDate: new Date(pickupDate),
+    dropDate: new Date(dropDate),
     numberOfDays,
     documentNumber,
     documentSubmitted,
@@ -130,8 +130,8 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     order.customerNumber = req.body.customerNumber;
     order.vehicleBrand = req.body.vehicleBrand;
     order.vehicleModel = req.body.vehicleModel;
-    order.pickupDate = req.body.pickupDate;
-    order.dropDate = req.body.dropDate;
+    order.pickupDate = new Date(req.body.pickupDate);
+    order.dropDate = new Date(req.body.dropDate);
     order.numberOfDays = req.body.numberOfDays;
     order.totalOrderAmount = req.body.totalOrderAmount;
     order.documentNumber = req.body.documentNumber;
@@ -147,8 +147,8 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     console.log("in user condition unconfirmed");
     order.vehicleBrand = req.body.vehicleBrand;
     order.vehicleModel = req.body.vehicleModel;
-    order.pickupDate = req.body.pickupDate;
-    order.dropDate = req.body.dropDate;
+    order.pickupDate = new Date(req.body.pickupDate);
+    order.dropDate = new Date(req.body.dropDate);
     order.numberOfDays = req.body.numberOfDays;
     order.totalOrderAmount = req.body.totalOrderAmount;
     console.log(order, "updated order data");
@@ -159,7 +159,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     });
   } else if (order.orderStatus === "Confirmed" && userData.role === "user") {
     console.log("in user confirmed order condition");
-    order.dropDate = req.body.dropDate;
+    order.dropDate = new Date(req.body.dropDate);
     order.numberOfDays = req.body.numberOfDays;
     order.totalOrderAmount = req.body.totalOrderAmount;
     await order.save({ validateBeforeSave: false });
@@ -170,8 +170,8 @@ exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
     console.log("in vendor confirmed order condition");
     order.vehicleBrand = req.body.vehicleBrand;
     order.vehicleModel = req.body.vehicleModel;
-    order.pickupDate = req.body.pickupDate;
-    order.dropDate = req.body.dropDate;
+    order.pickupDate = new Date(req.body.pickupDate);
+    order.dropDate = new Date(req.body.dropDate);
     order.numberOfDays = req.body.numberOfDays;
     order.totalOrderAmount = req.body.totalOrderAmount;
     order.documentNumber = req.body.documentNumber;
